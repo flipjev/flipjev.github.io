@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FlipJev: Universal Adversarial Suffixes for Typed Decision Models</title>
+  <meta name="description" content="A quick black-box attack finds short suffixes that flip the correct decisions of the typed decision model Jev. One suffix per dataset flips 43% of unseen documents, and suffixes transfer across tasks.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="FlipJev: Fast Black-Box Red Teaming Finds Universal Adversarial Suffixes for Typed Decision Models">
+  <meta property="og:description" content="Short suffixes, found with probabilities alone, flip the correct decisions of a typed decision model and transfer across tasks.">
+  <meta property="og:image" content="https://flipjev.github.io/assets/img/preview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Sans:wdth,wght@75..100,400..700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="bar">
+    <div class="wrap bar-inner">
+      <a class="bar-name" href="#top">FlipJev</a>
+      <nav aria-label="Sections">
+        <a href="#demo">Examples</a>
+        <a href="#findings" class="wide-only">Findings</a>
+        <a href="#method">Attack</a>
+        <a href="#results">Results</a>
+        <a href="#citation">Citation</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero wrap" id="top">
+      <div class="hero-text">
+        <div class="logos">
+          <img src="assets/img/jhu.png" alt="Johns Hopkins University" class="logo logo-jhu">
+          <img src="assets/img/wisc.png" alt="University of Wisconsin–Madison" class="logo logo-wisc">
+        </div>
+        <h1>FlipJev: Fast Black-Box Red Teaming Finds Universal Adversarial Suffixes for Typed Decision Models</h1>
+        <p class="authors">
+          <a href="https://xiaogeng-liu.com">Xiaogeng Liu</a><sup>1</sup>,
+          <a href="https://xinyan-wang-stat.github.io">Xinyan Wang</a><sup>2</sup>,
+          <a href="https://xiaocw11.github.io">Chaowei Xiao</a><sup>1</sup>
+        </p>
+        <p class="affils"><sup>1</sup>Johns Hopkins University <span class="sep" aria-hidden="true"></span> <sup>2</sup>University of Wisconsin–Madison</p>
+        <div class="links">
+          <span class="btn btn-off" aria-disabled="true" title="The arXiv link will appear here when the paper is public">Paper (arXiv, soon)</span>
+          <a class="btn" href="https://github.com/SaFo-Lab/FlipJev">Code</a>
+          <a class="btn" href="#citation">BibTeX</a>
+        </div>
+        <p class="lede">Typed decision models answer a developer's question with probabilities over typed options instead of generating text. Common prompt injections do not change the correct answers of Jev, the first deployed model of this kind. A quick black-box attack that reads only these probabilities finds short suffixes that do. One suffix per dataset flips 43% of unseen documents, and a suffix found on one task flips the decisions of other tasks.</p>
+      </div>
+
+      <figure class="hero-demo" aria-label="Interactive example: one email, with and without the attack suffix">
+        <div id="hero-instrument" class="instrument"></div>
+        <figcaption>One email, written by us, sent to <code>typesafe/jev-1.13</code>. Press the button to append the 7-token suffix that the attack found after 1,860 queries.</figcaption>
+      </figure>
+    </section>
+
+    <section class="block" id="demo">
+      <div class="wrap">
+        <h2>Try the suffixes</h2>
+        <p class="intro">The first three tabs show universal suffixes. Each was found once, on 10 training documents of its dataset, and then appended to documents that the attack never queried. The question stays the same and the suffix never names its subject, so the correct answer stays <em>yes</em>. Every probability is the mean of 10 fresh queries to Jev, without and with the suffix. The last tab shows a suffix that moves the safety verdict on an agent trajectory.</p>
+        <div class="tabs" role="tablist" aria-label="Task" id="sample-tabs"></div>
+        <div id="sample-panel" class="sample-panel" role="tabpanel" tabindex="0"></div>
+        <noscript><p>The interactive examples need JavaScript.</p></noscript>
+      </div>
+    </section>
+
+    <section class="block" id="findings">
+      <div class="wrap narrow">
+        <h2>What we found</h2>
+        <ol class="findings">
+          <li>
+            <h3>Common prompt injections fail</h3>
+            <p>No common strategy changed a correct answer of Jev in 10,240 paired tests on emails, including requests to output the wrong label, fake completions, context ignoring and a forged JSON answer. On the other 11 datasets, five common strategies flipped none of the unseen inputs either.</p>
+          </li>
+          <li>
+            <h3>A quick query-based attack succeeds</h3>
+            <p>The attack edits a short suffix with cheap word-level changes and keeps the edits that raise the probability of the wrong answer. On the nine datasets, it flipped 58 of 180 confident targets within 2,000 queries, which take about two minutes. On emails, 11 of 28 searches found a confirmed flip.</p>
+          </li>
+          <li>
+            <h3>One suffix flips many unseen documents</h3>
+            <p>Scored on a batch of 10 training documents instead of one, the same attack finds one suffix per dataset. These suffixes flip 114 of 264 unseen documents (43%), and the universal suffix for ATBench moves 9 of 30 unseen unsafe agent trajectories to a <em>safe</em> verdict.</p>
+          </li>
+          <li>
+            <h3>Suffixes transfer across tasks</h3>
+            <p>A typed decision model performs many tasks, because the question in its input defines the task. The suffix found on full arXiv papers flips 90–100% of the documents of five other datasets that ask different questions, without a single query to them.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="block" id="method">
+      <div class="wrap">
+        <h2>How the attack works</h2>
+        <p class="intro narrow-text">The attacker writes only the untrusted content and reads only the probabilities that the API returns. To keep pace with a model that answers in about 0.3 seconds, the attack generates candidates with word-level edits instead of an attacker language model, so its whole budget goes to queries.</p>
+        <ol class="steps">
+          <li><span class="step-n" aria-hidden="true">1</span><div><h3>Start from a seed</h3><p>A short text such as <code class="sfx">question: is 'no' accurate</code>, appended after a blank line at the end of the untrusted content.</p></div></li>
+          <li><span class="step-n" aria-hidden="true">2</span><div><h3>Mutate</h3><p>Each round makes 64 new suffixes from the 16 best ones: substitutions, insertions, deletions, swaps, copies, random strings and crossover.</p></div></li>
+          <li><span class="step-n" aria-hidden="true">3</span><div><h3>Query and rank</h3><p>Jev scores every candidate. The fitness is the probability of the wrong answer, averaged over 10 training documents for a universal suffix.</p></div></li>
+          <li><span class="step-n" aria-hidden="true">4</span><div><h3>Confirm and shorten</h3><p>A new best suffix counts only if at least 2 of 3 fresh queries flip. The attack then deletes words while the flip holds.</p></div></li>
+        </ol>
+        <div class="rules">
+          <h3>Constraints on every suffix</h3>
+          <ul>
+            <li>At most 32 tokens (64 for agent trajectories), appended to the untrusted content only.</li>
+            <li>No word that names the subject of the question, so the correct answer does not change.</li>
+            <li>The trusted question, the answer options and the developer's settings stay untouched.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="results">
+      <div class="wrap">
+        <h2>Results</h2>
+
+        <figure class="result">
+          <figcaption><strong>Attack success rate on the 12 datasets.</strong> Share of correct, confident decisions that each method flips. Per-document search: one search of up to 2,000 queries for each target. Universal suffix: one suffix per dataset, found on 10 training inputs and applied to 30 unseen inputs (24 for 20 Newsgroups).</figcaption>
+          <div class="table-scroll"><table id="main-table" class="main-table"></table></div>
+        </figure>
+
+        <div class="result-pair">
+          <figure class="result" id="budget-figure">
+            <figcaption><strong>Flips accumulate with the number of queries.</strong> Share of the 20 targets of each dataset (email: of the 28 searches) whose search confirms a flip within a given number of queries. Point at a line or a name to compare.</figcaption>
+            <div id="budget-chart" class="chart"></div>
+            <div id="budget-legend" class="legend"></div>
+          </figure>
+
+          <figure class="result" id="transfer-figure">
+            <figcaption><strong>Transfer between datasets and tasks.</strong> Each cell gives the share of the first 20 unseen documents of the column dataset that the universal suffix of the row dataset flips (3 queries each, no search). Select a row to read its suffix.</figcaption>
+            <div id="transfer-grid" class="heatmap"></div>
+            <div id="transfer-detail" class="transfer-detail" aria-live="polite"></div>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" id="disclosure">
+      <div class="wrap narrow">
+        <h2>Responsible disclosure</h2>
+        <p>We reported these findings to TypeSafe before publication, through the official security-reporting channel of the vendor. The report included the universal suffixes, the exact input of each suffix and the responses of the API, so each case can be replayed. The suffixes change only the decisions of a typed decision model. They do not extract data or make a model produce harmful text, and they affect only systems in which the attacker can already write content.</p>
+      </div>
+    </section>
+
+    <section class="block" id="citation">
+      <div class="wrap narrow">
+        <h2>Citation</h2>
+        <div class="bib">
+          <pre id="bibtex"><code>@article{liu2026flipjev,
+  title   = {FlipJev: Fast Black-Box Red Teaming Finds Universal
+             Adversarial Suffixes for Typed Decision Models},
+  author  = {Liu, Xiaogeng and Wang, Xinyan and Xiao, Chaowei},
+  journal = {arXiv preprint},
+  year    = {2026}
+}</code></pre>
+          <button type="button" class="btn copy" id="copy-bib">Copy BibTeX</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap">
+      <p>Measurements of <code>typesafe/jev-1.13</code> (snapshot <code>typesafe/jev-1.13-20260917</code>) through the OpenRouter Decisions API, September–October 2026.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
