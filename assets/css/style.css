@@ -140,7 +140,6 @@ h3 { font-size: 18px; line-height: 1.35; font-weight: 650; }
   padding: 10px 18px; text-decoration: none; cursor: pointer;
 }
 .btn:hover { color: var(--bg); background: var(--suffix); border-color: var(--suffix); }
-.btn-off, .btn-off:hover { background: transparent; color: var(--muted); border-color: var(--line); cursor: default; }
 .lede { font-size: 18px; line-height: 1.6; margin: 0; max-width: 34em; }
 
 .hero-demo { margin: 0; }

@@ -1,6 +1,6 @@
 # FlipJev project page
 
-Source of the project page for *FlipJev: Fast Black-Box Red Teaming Finds Universal Adversarial Suffixes for Typed Decision Models*, served at <https://flipjev.github.io>.
+Source of the project page for [*FlipJev: Fast Black-Box Red Teaming Finds Universal Adversarial Suffixes for Typed Decision Models*](https://arxiv.org/abs/2610.38895), served at <https://flipjev.github.io>.
 
 The page is static HTML, CSS and JavaScript with no build step. To preview it locally:
 
